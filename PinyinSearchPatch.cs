@@ -10,7 +10,7 @@ namespace EFTPinyinSearch
     internal class PinyinSearchPatch
     {
         //参考了小火山的搜索优化, 去除搜索长度限制
-        [HarmonyPatch(typeof(BrowseCategoriesPanel), "method_2")]
+        [HarmonyPatch(typeof(BrowseCategoriesPanel), nameof(BrowseCategoriesPanel.CG_Awake))]
         internal static class BrowseCategoriesPanelInputPadPatch
         {
             private static void Prefix(ref string arg)
