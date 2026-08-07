@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EFT;
+using System;
 using System.Collections.Generic;
 using ToolGood.Words.Pinyin;
 
@@ -20,11 +21,11 @@ namespace EFTPinyinSearch
             {
                 Console.WriteLine($"[{PluginsInfo.NAME}] 首次搜索触发，正在初始化全局拼音字典...");
                 //从LocaleManager的全局单例获取字典
-                var localeManager = LocaleManagerClass.LocaleManagerClass;
+                var localeManager = LocalizationManager.Instance;
                 if (localeManager == null) return;
                 //LocaleManager存储的当前语言key
-                string currentLang = localeManager.String_0;
-                if (localeManager.Dictionary_4.TryGetValue(currentLang, out var currentLocaleDict))
+                string currentLang = localeManager.Culture;
+                if (localeManager._locales.TryGetValue(currentLang, out var currentLocaleDict))
                 {
                     foreach (var kvp in currentLocaleDict)
                     {

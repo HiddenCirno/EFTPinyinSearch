@@ -1,4 +1,6 @@
-﻿using EFT.UI;
+﻿using EFT;
+using EFT.HandBook;
+using EFT.UI;
 using HarmonyLib;
 using System;
 using System.Reflection;
@@ -33,13 +35,13 @@ namespace EFTPinyinSearch
             //Class3102是编译时生成的自动化类型, 无法直接访问, 动态捕获方法
             private static MethodBase TargetMethod()
             {
-                _closureType = AccessTools.Inner(typeof(BrowseCategoriesPanel), "Class3102");
+                _closureType = AccessTools.Inner(typeof(BrowseCategoriesPanel), "CG_Class3102");
                 _panelField = AccessTools.Field(_closureType, "browseCategoriesPanel_0");
                 _valueField = AccessTools.Field(_closureType, "value");
                 return AccessTools.Method(_closureType, "method_1");
             }
             //Prefix注入搜索逻辑
-            private static bool Prefix(object __instance, EntityNodeClass x, ref bool __result)
+            private static bool Prefix(object __instance, HandbookNode x, ref bool __result)
             {
                 //传参为空, 搜索无结果
                 if (__instance == null || x == null || x.Data == null) { __result = false; return false; }
@@ -81,7 +83,7 @@ namespace EFTPinyinSearch
             }
         }
         //仓库搜索逻辑
-        [HarmonyPatch(typeof(EFT.UI.StashSearchWindow), "method_25")]
+        [HarmonyPatch(typeof(StashSearchWindow), nameof(StashSearchWindow.SearchTextChangeHandler))]
         internal static class StashSearchWindow_method25_Patch
         {
             //缓存
@@ -90,13 +92,13 @@ namespace EFTPinyinSearch
             static StashSearchWindow_method25_Patch()
             {
                 //反射获取白名单
-                _list2Field = AccessTools.Field(typeof(EFT.UI.StashSearchWindow), "list_2");
+                _list2Field = AccessTools.Field(typeof(StashSearchWindow), "_textSearchTemplates");
             }
             //Postfix
             //仓库搜索和跳蚤搜索逻辑不同
             //仓库搜索最终给出一个符合条件的白名单
             //我们不完全覆盖逻辑, 而是将拼音匹配结果注入白名单
-            private static void Postfix(EFT.UI.StashSearchWindow __instance, string text)
+            private static void Postfix(StashSearchWindow __instance, string text)
             {
                 //空值检查
                 if (string.IsNullOrEmpty(text)) return;
